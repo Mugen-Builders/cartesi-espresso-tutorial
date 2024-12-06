@@ -7,8 +7,11 @@ To run Nonodo with a full testnet setup, we must provide:
 - The URL for accessing Espresso’s testnet
 - The Espresso block number from which to start looking for inputs; if absent, Nonodo will start looking at Espresso block 0; in practice, it is often a good idea to query Espresso’s current block height when deploying your application, and use that to appropriately specify this initial block number.
 
-> [!WARNING]
-> Espresso’s testnet (called “Decaf”) only posts commitments to Sepolia, so you should not deploy your application to other testnets such as Optimism Sepolia or Arbitrum Sepolia.
+:::warning
+
+Espresso’s testnet (called “Decaf”) only posts commitments to Sepolia, so you should not deploy your application to other testnets such as Optimism Sepolia or Arbitrum Sepolia.
+
+:::
 
 - Register your dApp Address
 
