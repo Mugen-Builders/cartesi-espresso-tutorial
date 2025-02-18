@@ -2,16 +2,38 @@
 
 ## Inspecting state
 
-Inspecting the state of your dApp though `handle_inspect` function is done in the same way as using Cartesi Rollups standalone. You can refer to the [docs](https://docs.cartesi.io/cartesi-rollups/1.5/development/send-requests/#make-inspect-calls)
+Inspecting the state of your dApp through `handle_inspect` function is done in the same way as using Cartesi Rollups v2. To perform an Inspect call, use an HTTP POST request to URL   `<node-address>/inspect/<app-address>/<payload>`. 
+
+For example, using `curl` in a local environment:
+
+```bash
+curl -X POST http://localhost:8080/inspect/0x75135d8ADb7180640d29d822D9AD59E83E8695b2 \
+     -H "Content-Type: application/json" \
+     -d 'hello'
+```
+A typical inspect response is a JSON object with the following fields:
+
+```json
+{
+  "exception_payload": "0x",
+  "processed_input_count": 0,
+  "reports": [
+    {
+      "payload": "hex-encoded-output-string"
+    }
+  ],
+  "status": "Accepted"
+}
+```
 
 ## Querying outputs
 
-Querying outputs directly is the exact same as using Cartesi Rollups standalone. You can refer to the [docs](https://docs.cartesi.io/cartesi-rollups/1.5/rollups-apis/graphql/overview/)
+Querying outputs via graphql is similar to using Cartesi Rollups v2.
 
-To query outputs from a specific the process is very similar to using Cartesi Rollups Standalone. You can refer to the [docs](https://docs.cartesi.io/cartesi-rollups/1.5/rollups-apis/graphql/overview/) to read more.
-The big difference is the output format. Instead of querying inputs through the `index` field, you query them through an `id` field.
+The graphql endpoint is available at `<node-address>/graphql/<app-address>`.
 
-This id field can come in two ways:
+
+We query outputs through an `id` field. This id field can come in two ways:
 
 - It is a hex value returned from `/submit` endpoint when the input comes from and EIP-712 signed message
 - It is string containing a scalar integer value that can be found inside the events emitted by the `inputBox` contract when sending the transaction through the layer 1.
