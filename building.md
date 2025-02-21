@@ -5,27 +5,28 @@ Dev environment in this guide refers to the **Cartesi Rollups Node v2** and **Es
 We have two approaches to run your application in the dev environment:
 
 1. Run your app using Rollups Node v2 [Coming Soon]
-2. Run your app inside Cartesi Machine using Nonodo
+2. Run your app inside Cartesi Machine [using Nonodo]
 
 :::note
 The 1st approach(using Cartesi CLI) can be tested with a full Testnet environment, follow the [testnet guide](./testnet.md) to check the steps.
 :::
 
-## Running Nonodo with a Cartesi Machine
+## Running app inside Cartesi Machine (using Nonodo)
 
 For development and rapid prototyping of your app in your local machine, it is recommended that you use `Nonodo` for simulating Espresso inputs.
 
 With it you can skip a lot of the setup and send EIP-712 messages directly to the node using the `nonce` and `submit` endpoints that will be running on `localhost:8080/nonce` and `localhost:8080/submit`
 
-- On your terminal, start **Nonodo** using the command;
+### Start Nonodo
+On your terminal, start **Nonodo** environment using the command:
 
 ```bash
 nonodo
 ```
 
-## Running the Machine
+### Build and Run your App
 
-- In another terminal, create and build a new Cartesi dApp using the following commands:
+In another terminal tab, create and build a new Cartesi dApp using the following commands:
 
 ### 1. **Python**
 
@@ -84,3 +85,5 @@ cartesi build
 cartesi-machine --network --flash-drive=label:root,filename:.cartesi/image.ext2 \
 --volume=.:/mnt --env=ROLLUP_HTTP_SERVER_URL=http://10.0.2.2:5004 --workdir=/opt/cartesi/dapp -- node index
 ```
+
+Your app is now ready to receive inputs, you can follow the steps in [send inputs](./interacting.md) section.
