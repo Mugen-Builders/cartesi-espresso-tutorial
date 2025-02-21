@@ -1,5 +1,100 @@
 # Running with a Testnet Environment
 
+Testnet environment in this guide refers to the **_Ethereum Sepolia Testnet_** as a Layer 1 and **_Espresso Decaf Testnet_** as a Layer 2 network. You can refer to the [architecture section](./architecture.md) to read more on how the Cartesi Node interprets messages from both the layers. This environment provides a full blown Espresso integration with its live nodes.
+
+There are two approaches to use the testnet environment:
+
+1. Run the Node in your local machine
+2. Deploy the Node to a cloud host
+
+In this guide, we’ll focus on the 1st approach and in subsequent section, we’ll take a look at how to deploy your Node to fly.io.
+
+:::note
+
+The guide assumes that you have already created a Cartesi dApp and have a snapshot image ready. You can follow the [building guide](./building.md) to create a dApp and generate build artifacts.
+
+:::
+
+## Run the Rollups Node V2 
+
+We're going to spin up a Cartesi Rollups Node V2 container using the `node-recipes`.
+
+### Step 1: Setup Docker Image
+
+Go to the application directory and copy the dockerfile, the docker compose file, and the node.mk.
+
+```bash
+wget -q https://github.com/prototyp3-dev/node-recipes/archive/refs/heads/feature/use-20250128-build.zip -O recipes.zip
+unzip -q recipes.zip "node-recipes-feature-use-20250128-build/node/*" -d . && mv node-recipes-feature-use-20250128-build/node/* . && rmdir -p node-recipes-feature-use-20250128-build/node
+rm recipes.zip
+```
+
+Pull the latest Cartesi Rollups Node V2 image.
+
+```bash
+docker pull ghcr.io/prototyp3-dev/test-node:test
+```
+
+### Step 2: Create a .env file for Testnet
+
+Create a `.env.sepolia` file inside the application directory with the following variables:
+
+```bash
+# cartesi node configuration
+CARTESI_LOG_LEVEL=info
+CARTESI_AUTH_KIND=private_key
+CARTESI_CONTRACTS_INPUT_BOX_ADDRESS=0x593E5BCf894D6829Dd26D0810DA7F064406aebB6
+CARTESI_CONTRACTS_INPUT_BOX_DEPLOYMENT_BLOCK_NUMBER=6994348
+
+# espresso configuration
+MAIN_SEQUENCER=espresso
+ESPRESSO_BASE_URL=https://query.decaf.testnet.espresso.network
+ESPRESSO_NAMESPACE=51025
+ESPRESSO_STARTING_BLOCK=<current-block-number>
+
+# sepolia chain configuration
+CARTESI_BLOCKCHAIN_HTTP_ENDPOINT=<sepolia-rpc-url>
+CARTESI_BLOCKCHAIN_WS_ENDPOINT=<sepolia-ws-url>
+CARTESI_BLOCKCHAIN_ID=11155111
+CARTESI_AUTH_PRIVATE_KEY=<node-private-key>
+```
+
+### Step 3: Run the Docker Containers
+
+```bash
+make -f node.mk run-database-<testnet>
+make -f node.mk run-node-<testnet>
+```
+
+To stop the containers later, run the following command:
+
+```bash
+make -f node.mk stop-<testnet>
+``` 
+
+### Step 4: Deploy the App Contract on Sepolia
+
+```bash
+make -f node.mk deploy-<testnet> OWNER=<app-and-auth-owner>
+```
+
+Your app is now ready to receive inputs from the Decaf testnet and Sepolia network. To start interacting, follow the steps in [send inputs](./interacting.md) section.
+
+:::note
+
+You should set `OWNER` to the same owner of the `CARTESI_AUTH_PRIVATE_KEY`. Set `CONSENSUS_ADDRESS` to deploy a new application with same consensus already deployed. You can also set `EPOCH_LENGTH`, and `SALT`.
+
+If want to register an already deployed application to the node use (optionally set `IMAGE_PATH`):
+
+```bash
+make -f node.mk register-<testnet> APPLICATION_ADDRESS=<app address> CONSENSUS_ADDRESS=<auth address> 
+```
+
+:::
+
+
+
+## Rapid prototyping with Testnet (using Nonodo)
 To run Nonodo with a full testnet setup, we must provide:
 
 - The URL of a gateway RPC on Sepolia

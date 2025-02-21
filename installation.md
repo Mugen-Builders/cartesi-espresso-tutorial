@@ -2,22 +2,29 @@
 
 ## Prerequisites
 
+- Cartesi CLI: A command line tool to create, build and run Cartesi Rollups applications.
 - Nonodo: A node responsible for communication with Espreso and Cartesi.
 - Cartesi Machine: Backend logic engine for the dApp.
 
 ## Install Tools
 
-You can install nonodo in multiple ways. Either through an NPM Package or building from source
+### 1. Cartesi CLI
 
-### 1. Nonodo
+- Install Cartesi CLI version 2.0.0 compatible with Cartesi Rollups Node v2:
 
-- Espresso integration support is available in the beta release of Nonodo. You can install it through npm using the command:
+```bash
+npm i -g @cartesi/cli@2.0.0-alpha.4
+```
+
+### 2. Nonodo
+
+- We'll install Nonodo beta version that supports Espresso integration. Run the following command:
 
 ```bash
 npm i -g nonodo@beta
 ```
 
-### 2. Cartesi Machine
+### 3. Cartesi Machine
 
 - Download the Cartesi machine for your OS from [this link](https://github.com/edubart/cartesi-machine-everywhere/releases).
 
@@ -70,11 +77,3 @@ This should display the available options for the Cartesi Machine, indicating th
 For Mac users, running this command might trigger a prompt from Mac built in security feauture. Check this part of the [troubleshooting section](./troubleshooting#1-cartesi-machine-blocked-by-mac-security-feautures) for more guidelines on how to resolve this.
 
 :::
-
-### 3. Cartesi CLI
-
-You can Install the Cartesi Cli using the command;
-
-```bash
-npm i -g @cartesi/cli
-```

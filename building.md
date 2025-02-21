@@ -1,5 +1,16 @@
 # Running with a Dev Environment
 
+Dev environment in this guide refers to the **Cartesi Rollups Node v2** and **Espresso Dev Node** running on your local machine.
+
+We have two approaches to run your application in the dev environment:
+
+1. Run your app using Rollups Node v2 [Coming Soon]
+2. Run your app inside Cartesi Machine using Nonodo
+
+:::note
+The 1st approach(using Cartesi CLI) can be tested with a full Testnet environment, follow the [testnet guide](./testnet.md) to check the steps.
+:::
+
 ## Running Nonodo with a Cartesi Machine
 
 For development and rapid prototyping of your app in your local machine, it is recommended that you use `Nonodo` for simulating Espresso inputs.
@@ -19,7 +30,7 @@ nonodo
 ### 1. **Python**
 
 ```bash
-cartesi create my-dapp --template python
+cartesi create my-dapp --template python --branch prerelease/sdk-12
 cd my-dapp
 cartesi build
 ```
@@ -34,7 +45,7 @@ cartesi-machine --network --flash-drive=label:root,filename:.cartesi/image.ext2 
 ### 2. **Rust**
 
 ```bash
-cartesi create my-dapp --template rust
+cartesi create my-dapp --template rust --branch prerelease/sdk-12
 cd my-dapp
 cartesi build
 ```
@@ -48,7 +59,7 @@ cartesi-machine --network --flash-drive=label:root,filename:.cartesi/image.ext2 
 ### 3. **Golang**
 
 ```bash
-cartesi create my-dapp --template go
+cartesi create my-dapp --template go --branch prerelease/sdk-12
 cd my-dapp
 cartesi build
 ```
@@ -62,7 +73,7 @@ cartesi-machine --network --flash-drive=label:root,filename:.cartesi/image.ext2 
 ### 4. **Javascript**
 
 ```bash
-cartesi create my-dapp --template javascript
+cartesi create my-dapp --template javascript --branch prerelease/sdk-12
 cd my-dapp
 cartesi build
 ```
