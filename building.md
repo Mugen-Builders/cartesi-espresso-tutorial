@@ -1,4 +1,4 @@
-# Building and Running locally
+# Running with a Dev Environment
 
 ## Running Nonodo with a Cartesi Machine
 

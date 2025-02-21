@@ -1,4 +1,4 @@
-# Running on a Testnet
+# Running with a Testnet Environment
 
 To run Nonodo with a full testnet setup, we must provide:
 
