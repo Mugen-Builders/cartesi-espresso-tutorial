@@ -19,10 +19,10 @@ Espresso’s testnet (called “Decaf”) only posts commitments to Sepolia, so 
   https://address.mugen.builders
   In the above link you can connect with your wallet and using you public key generate a **dApp address** that will be used in the command that follows.
 
-- Start **_brunodo_** using the command with the flag with the flag that enables integration with Espresso;
+- Start **_Nonodo_** using the command with the flag with the flag that enables integration with Espresso;
 
 ```bash
-brunodo \
+nonodo \
   --rpc-url https://eth-sepolia.g.alchemy.com/v2/_NNA-xQcIATiYWv_UsRuk7BGLmrbxcvM \
   --contracts-application-address <dapp> \
   --sequencer espresso \

@@ -2,14 +2,14 @@
 
 ## Running Nonodo with a Cartesi Machine
 
-To test and develop your app locally it is highly recommended that you use `Brunodo` since it contains all the experimental features from `Nonodo` such as simulating espresso inputs.
+For development and rapid prototyping of your app in your local machine, it is recommended that you use `Nonodo` for simulating Espresso inputs.
 
-With it you can skip a lot of the setup and send EIP-712 messages directly to the node using the nonce and submit endpoints that will be running on `localhost:8080/nonce` and `localhost:8080/submit`
+With it you can skip a lot of the setup and send EIP-712 messages directly to the node using the `nonce` and `submit` endpoints that will be running on `localhost:8080/nonce` and `localhost:8080/submit`
 
-- Start **brunodo** using the command;
+- On your terminal, start **Nonodo** using the command;
 
 ```bash
-brunodo
+nonodo
 ```
 
 ## Running the Machine

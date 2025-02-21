@@ -11,10 +11,10 @@ You can install nonodo in multiple ways. Either through an NPM Package or buildi
 
 ### 1. Nonodo
 
-- Install brunodo, the experimental version of nonodo through npm using the command:
+- Espresso integration support is available in the beta release of Nonodo. You can install it through npm using the command:
 
 ```bash
-npm install -g brunodo
+npm i -g nonodo@beta
 ```
 
 ### 2. Cartesi Machine
