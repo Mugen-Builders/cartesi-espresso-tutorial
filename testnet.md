@@ -7,7 +7,7 @@ There are two approaches to use the testnet environment:
 1. Run the Node in your local machine
 2. Deploy the Node to a cloud host
 
-In this guide, we’ll focus on the 1st approach and in subsequent section, we’ll take a look at how to deploy your Node to fly.io.
+In this guide, we’ll focus on the 1st approach and in [deployment](./deployment.md) section, we’ll take a look at how to deploy your Node to [fly.io](https://fly.io).
 
 :::note
 
