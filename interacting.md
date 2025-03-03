@@ -4,7 +4,7 @@
 
 - Sending transactions such as deposits or generic messages through the layer 1 is done in the same ways as Cartesi Rollups standalone. You can use `cast`, the `cartesi cli` or other approaches. You can follow them here in the [docs](https://docs.cartesi.io/cartesi-rollups/1.5/development/send-requests/)
 
-- To send a dummy anvil execution that should go through espresso and the piao sequencer before being picked up by your dapp running in the Cartesi Machine you can run the following command:
+- To send a dummy anvil execution that should go through Espresso network before being picked up by your dapp running in the Cartesi Machine you can run the following command:
 
   - Install The mugen-builders cli using npm:
 

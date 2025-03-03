@@ -4,14 +4,21 @@ Dev environment in this guide refers to the **Cartesi Rollups Node v2** and **Es
 
 We have two approaches to run your application in the dev environment:
 
-1. Run your app using Rollups Node v2 [Coming Soon]
-2. Run your app inside Cartesi Machine [using Nonodo]
+1. Run your app using Rollups Node v2 [Guide Coming Soon]
+2. Run your app using Nonodo [Rapid Prototyping Tool]
+
+
+
+## Running app using Rollups Node v2
+[Coming Soon] This section will cover building and running your app using Rollups Node v2 in tandem with Espresso Dev Node.
 
 :::note
-The 1st approach(using Cartesi CLI) can be tested with a full Testnet environment, follow the [testnet guide](./testnet.md) to check the steps.
+
+ Rollups Node v2 is available for testing with a full Testnet environment. You'll need machine snapshot image that can be generated from steps shown below in the Nonodo section. After that, follow the [testnet guide](./testnet.md) to run your app. 
+
 :::
 
-## Running app inside Cartesi Machine (using Nonodo)
+## Running app using Nonodo 
 
 For development and rapid prototyping of your app in your local machine, it is recommended that you use `Nonodo` for simulating Espresso inputs.
 
