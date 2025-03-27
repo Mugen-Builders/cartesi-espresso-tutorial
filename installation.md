@@ -1,22 +1,37 @@
 # Installation
 
-## Prerequisites
+## Tools Required
 
+- Docker Desktop: Required to run Node Docker containers.
 - Cartesi CLI: A command line tool to create, build and run Cartesi Rollups applications.
-- Nonodo: A node responsible for communication with Espreso and Cartesi.
-- Cartesi Machine: Backend logic engine for the dApp.
+- Nonodo: A rapid prototyping tool to simulate Espresso and Cartesi integration.
+- Cartesi Machine: The virtual machine binary to run your application's backend logic.
 
-## Install Tools
+## Steps to Install
 
-### 1. Cartesi CLI
+### 1. Docker Desktop
+
+- Install Docker Desktop from [here](https://www.docker.com/products/docker-desktop/).
+
+:::note
+
+To install Docker RISC-V support without using Docker Desktop, run the following command:
+
+```bash
+docker run --privileged --rm tonistiigi/binfmt --install all
+```
+
+:::
+
+### 2. Cartesi CLI
 
 - Install Cartesi CLI version 2.0.0 compatible with Cartesi Rollups Node v2:
 
 ```bash
-npm i -g @cartesi/cli@2.0.0-alpha.4
+npm i -g @cartesi/cli@alpha
 ```
 
-### 2. Nonodo
+### 3. Nonodo
 
 - We'll install Nonodo beta version that supports Espresso integration. Run the following command:
 
@@ -24,7 +39,7 @@ npm i -g @cartesi/cli@2.0.0-alpha.4
 npm i -g nonodo@beta
 ```
 
-### 3. Cartesi Machine
+### 4. Cartesi Machine
 
 - Download the Cartesi machine for your OS from [this link](https://github.com/edubart/cartesi-machine-everywhere/releases).
 
