@@ -1,6 +1,9 @@
 # Deploying your application
 
-Deploying a Cartesi dApp involves two steps: deploying a smart contract that defines your dApp on-chain and then instantiating a node that runs the application’s intended backend logic.
+Deploying a Cartesi dApp in production involves three major steps: 
+1. Deploying the Rollups node to a cloud provider.
+2. Deploying the smart contracts that defines your application on-chain.
+3. Registering and deploying the application backend on the node.
 
 :::note
 
@@ -8,7 +11,10 @@ Currently, the Espresso integration support is limited to Ethereum Sepolia testn
 
 :::
 
-In the following steps, we'll focus on self-hosted deployment where we'll be deploying the node(with the application) to [fly.io](https://fly.io). Remember that developers are free to deploy the node on their local machine or on any other cloud host.
+In the following steps, we'll focus on self-hosted deployment where we'll be deploying the node to [fly.io](https://fly.io) and smart contracts on Ethereum Sepolia testnet.
+
+## Prerequisites
+You should have a [fly.io account](https://fly.io/) and [fly CLI](https://fly.io/docs/flyctl/install/) installed to follow these steps. 
 
 ## Deploying the node to fly.io
 Go to the directory containing your project. You should create a `.env.<testnet>` file with:
@@ -29,7 +35,11 @@ CARTESI_AUTH_PRIVATE_KEY=
 CARTESI_POSTGRES_ENDPOINT=
 ```
 
-Note that the value of `CARTESI_POSTGRES_ENDPOINT` will be provided on the Step 3.
+:::note
+
+The value of `CARTESI_POSTGRES_ENDPOINT` will be provided on the Step 3.
+
+:::
 
 Then follow these steps to deploy on fly
 
@@ -77,25 +87,20 @@ We suggest creating a persistent volume to store the snapshots, so you wouldn't 
 
 ### **Step 3**: Create the Postgres database
 
-```shell
-fly ext supabase create
-```
 
-Make sure to add the value of `CARTESI_POSTGRES_ENDPOINT` variable to your environment file.
-
-You can also use the `fly postgres` to create the database:
+You can also use the `fly postgres` to create the database
 
 ```shell
 fly postgres create
 ```
 
-Similarly, make sure to set the value of `CARTESI_POSTGRES_ENDPOINT` variable to your environment file. You should use the provided `Connection string` to set these variables, and don't forget to add the database `postgres` and option `sslmode=disable` to the string (**`postgres?sslmode=disable`**):
+Make sure to set the value of `CARTESI_POSTGRES_ENDPOINT` variable to your environment file. You should use the provided `Connection string` to set this variable, and don't forget to add the database `postgres` and option `sslmode=disable` to the string as shown below:
 
 ```shell
 postgres://{username}:{password}@{hostname}:{port}/postgres?sslmode=disable
 ```
 
-### **Step 4**: Create the Fly app without deploying yet
+### **Step 4**: Create the Fly app
 
 ```shell
 fly launch --name <app-name> --copy-config --no-deploy -c .fly/node/fly.toml
@@ -107,13 +112,13 @@ fly launch --name <app-name> --copy-config --no-deploy -c .fly/node/fly.toml
 fly secrets import -c .fly/node/fly.toml < .env.<testnet>
 ```
 
-### **Step 6**: Deploy the backend node
+### **Step 6**: Deploy the rollups node
 
 ```shell
 fly deploy --ha=false -c .fly/node/fly.toml
 ```
 
-Now you have a rollups node with the node running on the provided url.
+Now you have a rollups node running on the provided url.
 
 ### **Step 7**: Deploy the app to the node
 
@@ -141,7 +146,7 @@ fly sftp shell -c .fly/node/fly.toml
 Finally, run the deployment on the node: 
 
 ```shell
-fly ssh console -c .fly/node/fly.toml -C "bash -c 'OWNER={OWNER} /deploy.sh /mnt/apps/$app_name'"
+fly ssh console -c .fly/node/fly.toml -C "bash -c 'APP_NAME=$app_name OWNER={OWNER} /deploy.sh /mnt/apps/$app_name'"
 ```
 
 You should set `OWNER` to the same owner of the `CARTESI_AUTH_PRIVATE_KEY`. Set `CONSENSUS_ADDRESS` to deploy a new application with same consensus already deployed. You can also set `EPOCH_LENGTH`, and `SALT`.
@@ -149,7 +154,7 @@ You should set `OWNER` to the same owner of the `CARTESI_AUTH_PRIVATE_KEY`. Set 
 If you have already deployed the application, you can register it to add to the node (after transfering the image).
 
 ```shell
-fly ssh console -c .fly/node/fly.toml -C "bash -c 'APPLICATION_ADDRESS=${APPLICATION_ADDRESS} CONSENSUS_ADDRESS=${CONSENSUS_ADDRESS} /register.sh /mnt/apps/$app_name'"
+fly ssh console -c .fly/node/fly.toml -C "bash -c 'APP_NAME=$app_name APPLICATION_ADDRESS=${APPLICATION_ADDRESS} CONSENSUS_ADDRESS=${CONSENSUS_ADDRESS} /register.sh /mnt/apps/$app_name'"
 ```
 
-Your application is now deployed on the node. Also, note that you can deploy multiple applications on the same node.
+Your application is now deployed and registered on the node. Also, note that you can deploy multiple applications on the same node.
