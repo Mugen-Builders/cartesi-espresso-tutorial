@@ -27,62 +27,23 @@ If successful, you should see the image snapshot file in the `.cartesi` director
 
 ### Setup and run Dev Environment
 
-Fetch docker recipes:
+Download the `dev` script and setup the environment:
 ```bash
-wget -q https://github.com/prototyp3-dev/node-recipes/archive/refs/heads/feature/use-v0.2.3-node-20250128.zip -O recipes.zip
-unzip -q recipes.zip "node-recipes-feature-use-v0.2.3-node-20250128/node/*" -d . && mv node-recipes-feature-use-v0.2.3-node-20250128/node/* . && rmdir -p node-recipes-feature-use-v0.2.3-node-20250128/node
-rm recipes.zip
+curl -fsSL https://raw.githubusercontent.com/prototyp3-dev/node-recipes/feature/v2-alpha/dev.sh -o dev.sh && chmod +x dev.sh && ./dev.sh setup
 ```
 
-Pull latest Devnet image:
-
+Start development environment (with Espresso sequencer):
 ```bash
-docker pull ghcr.io/prototyp3-dev/test-devnet:test
+./dev.sh start
 ```
-
-Run the dev environment:
-To test with a local espresso development node, add the MAIN_SEQUENCER env and other espresso configurations to `.env.localhost` file:
-
-```bash
-MAIN_SEQUENCER=espresso
-ESPRESSO_BASE_URL=http://espresso:10040
-ESPRESSO_NAMESPACE=51025
-ESPRESSO_STARTING_BLOCK=2
+Deploy the application and the consensus contract:
 ```
-Run devnet, database and espresso node:
-```bash
-make -f node.mk run-devnet-localhost
-make -f node.mk run-database-localhost
-make -f node.mk run-espresso-localhost
+./dev.sh deploy
 ```
-
-Before starting the node, you should append the `.env.localhost` file with the correct values for the variables.
-
-```bash
-# anvil chain configuration
-CARTESI_BLOCKCHAIN_HTTP_ENDPOINT=http://localhost:8545
-CARTESI_BLOCKCHAIN_WS_ENDPOINT=ws://localhost:8545
-CARTESI_BLOCKCHAIN_ID=31337
-CARTESI_AUTH_PRIVATE_KEY=<node-private-key>
-
-# input box contract configuration
-CARTESI_CONTRACTS_INPUT_BOX_ADDRESS=0x593E5BCf894D6829Dd26D0810DA7F064406aebB6
-CARTESI_CONTRACTS_INPUT_BOX_DEPLOYMENT_BLOCK_NUMBER=<input-box-deployment-block-number>
+To stop the environment, run:
 ```
-
-Finally, start the node and deploy the application
-```bash
-make -f node.mk run-node-localhost
-make -f node.mk deploy-localhost 
+./dev.sh stop
 ```
-With the above deploy step, you should see the application and the consensus contract deployed on the dev environment.
-
-
-To stop the dev environment, run the following command:
-```bash
-make -f node.mk stop-localhost
-```
-
 You can now interact with your application by sending inputs to the node. Follow the steps in [send inputs](./interacting.md) section.
 
 
