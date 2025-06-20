@@ -1,62 +1,41 @@
 # Sending inputs to your dApp
 
-## Interacting via the CLI
+## Interacting via the Dev Script
 
-- Sending transactions such as deposits or generic messages through the layer 1 is done in the same ways as Cartesi Rollups standalone. You can use `cast`, the `cartesi cli` or other approaches. You can follow them here in the [docs](https://docs.cartesi.io/cartesi-rollups/1.5/development/send-requests/)
+- Sending an input to your Cartesi app that leverages Espresso sequencer is an EIP-712 type input.
 
-- To send a dummy anvil execution that should go through Espresso network before being picked up by your dapp running in the Cartesi Machine you can run the following command:
+You can run the send command of the dev script:
 
-  - Install The mugen-builders cli using npm:
+```bash
+./dev.sh send -a <app_address> -d <input_data_in_hex> -k <test_private_key>
+```
 
-  ```bash
-  npm install -g @mugen-builders/cli
-  ```
-
-  - Run the below command to start the process of sending the transaction:
-
-  ```bash
-  mugen-cli send
-  ```
-
-> [!IMPORTANT]
-> Check out [this Video](https://drive.google.com/file/d/1kK6SP8rTw4O5l6lBOGPexNfiUYJrzr7E/view?usp=sharing) for a demo on using the cli
+- Sending transactions such as depositing assets(Ether, ERC20, ERC721, etc.) or generic messages through the layer 1 is done in the same way as a regular Cartesi Rollups app. You can use `cast`, the `cartesi cli` or other approaches. You can follow them here in the [docs](https://docs.cartesi.io/cartesi-rollups/1.5/development/send-requests/)
 
 ## Interacting via the Frontend Template
 
-We have a demo example available which you can clone, and integrate into the dapp running on your local machine very easily. You can choose to modify this dApp to fit and match your ideal implementation and design.
-It contains a ways to send many types of input. Including interacting with your Cartesi dApp via espresso, which utilizes EIP-712 to sign typed data which is relayed on the users' behalf to the espresso testnet.
+We have a demo example available which you can clone, and integrate into the app running on your local machine very easily. You can choose to modify this app to fit and match your ideal implementation and design.
+It contains ways to send many types of input including interacting with your Cartesi app via Espresso.
 
 ### Installation
 
-- Clone the frontend repo integrated with EIP 712 by using this command:
+- Clone the frontend repo to your local machine:
 
 ```bash
-git clone https://github.com/Calindra/frontend-web-cartesi
+git clone https://github.com/lynoferraz/frontend-web-cartesi-v2-rpc
 ```
 
-- Install all the necessary dependencies by running this commands:
+- Install the dependencies and run in development mode:
 
 ```bash
-cd frontend-web-cartesi
-git checkout feature/refactor-simplification
-yarn install
+cd frontend-web-cartesi-v2-rpc
+pnpm install
+pnpm dev
 ```
 
-- Generate the necessary rollup data’s by running this command;
-
-```bash
-yarn codegen
-```
-
-- Start the frontend application by running:
-
-```bash
-yarn dev --port 3000
-```
-
-- Finally open your browser and navigate to the URL where your frontend dapp is running, you can now interact with your dapp running on local by signing and sending data to your dapp via espresso.
-- To send data via espresso use the “Send L2 EIP-712 Input” form in the Input section.
-- If you are running with the testnet remember to point to Sepolia
+- Open your browser and navigate to the URL where your frontend app is running, you can now interact with your app running on local by signing and sending data to your app via espresso.
+- To send data via Espresso, use the _“Send L2 EIP-712 Input”_ form in the Input section.
+- If you are running with the testnet, remember to point to Sepolia.
 
 ## Interacting via the NPM Package
 
