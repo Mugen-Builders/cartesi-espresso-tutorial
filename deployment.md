@@ -1,9 +1,11 @@
 # Deploying your application
 
-Deploying a Cartesi dApp in production involves three major steps: 
-1. Deploying the Rollups node to a cloud provider.
-2. Deploying the smart contracts that defines your application on-chain.
-3. Registering and deploying the application backend on the node.
+In the following deployment guide, we'll focus on self-hosted deployment where we'll deploy the node to [fly.io](https://fly.io) and application's smart contracts on Ethereum Sepolia testnet. We'll be using the `dev.sh` script to spreedrun the process.
+
+Deploying a Cartesi app in production requires: 
+1. Deployment of the Rollups node infrastructure to a cloud provider
+2. Deployment of the smart contracts that defines your application on-chain
+3. Registering and hosting the application backend on the Rollups node
 
 :::note
 
@@ -11,150 +13,69 @@ Currently, the Espresso integration support is limited to Ethereum Sepolia testn
 
 :::
 
-In the following steps, we'll focus on self-hosted deployment where we'll be deploying the node to [fly.io](https://fly.io) and smart contracts on Ethereum Sepolia testnet.
 
-## Prerequisites
+
+### Prerequisites
 You should have a [fly.io account](https://fly.io/) and [fly CLI](https://fly.io/docs/flyctl/install/) installed to follow these steps. 
 
-## Deploying the node to fly.io
+### Step:01  Deploy the node to fly.io
 Go to the directory containing your project. You should create a `.env.<testnet>` file with:
 
 ```shell
 CARTESI_LOG_LEVEL=info
 CARTESI_AUTH_KIND=private_key
-CARTESI_CONTRACTS_INPUT_BOX_ADDRESS=0x593E5BCf894D6829Dd26D0810DA7F064406aebB6
-CARTESI_CONTRACTS_INPUT_BOX_DEPLOYMENT_BLOCK_NUMBER=6994348
+CARTESI_CONTRACTS_INPUT_BOX_ADDRESS=0xc70074BDD26d8cF983Ca6A5b89b8db52D5850051
+CARTESI_CONTRACTS_AUTHORITY_FACTORY_ADDRESS=0xC7003566dD09Aa0fC0Ce201aC2769aFAe3BF0051
+CARTESI_CONTRACTS_APPLICATION_FACTORY_ADDRESS=0xc7006f70875BaDe89032001262A846D3Ee160051
+CARTESI_CONTRACTS_SELF_HOSTED_APPLICATION_FACTORY_ADDRESS=0xc700285Ab555eeB5201BC00CFD4b2CC8DED90051
 MAIN_SEQUENCER=espresso
-ESPRESSO_BASE_URL=https://query.decaf.testnet.espresso.network/
-ESPRESSO_NAMESPACE=51025
-ESPRESSO_STARTING_BLOCK=
+CARTESI_FEATURE_GRAPHQL_ENABLED=true
+CARTESI_FEATURE_RPC_ENABLED=true
+ESPRESSO_BASE_URL=https://query.decaf.testnet.espresso.network
+ESPRESSO_NAMESPACE=55555
 CARTESI_BLOCKCHAIN_HTTP_ENDPOINT=
 CARTESI_BLOCKCHAIN_WS_ENDPOINT=
-CARTESI_BLOCKCHAIN_ID=
+CARTESI_BLOCKCHAIN_ID=11155111
 CARTESI_AUTH_PRIVATE_KEY=
-CARTESI_POSTGRES_ENDPOINT=
+CARTESI_DATABASE_CONNECTION=
 ```
+
+Update the following variables before deployment:
+
+- `CARTESI_BLOCKCHAIN_HTTP_ENDPOINT`: Your Sepolia RPC endpoint (e.g., Infura, Alchemy)
+- `CARTESI_BLOCKCHAIN_WS_ENDPOINT`: Your Sepolia WebSocket endpoint
+- `CARTESI_AUTH_PRIVATE_KEY`: Private key for contract deployments
+- `CARTESI_DATABASE_CONNECTION`: Will be added after database creation in the next step
+
+
+Run the following command to deploy the node with the prepared env file.
+
+```shell
+./dev.sh deploy-node --app-name <app-name> --env-file .env.<testnet>
+```
+The above command will:
+- Create `fly.toml` configuration
+- Launch fly.io app (interactive setup)
+- Create Postgres database (interactive setup)
+- Leave you to update the database connection in your `.env.<testnet>` file
 
 :::note
 
-The value of `CARTESI_POSTGRES_ENDPOINT` will be provided on the Step 3.
+The `--app-name` in above command is not the Cartesi dApp's name, but the name of the fly.io cloud application. We'll name the dApp in the next step.
 
 :::
 
-Then follow these steps to deploy on fly
+### Step:02 Deploy the app to the node
 
-### **Step 1**: Create a directory for the fly app 
-
-```shell
-mkdir -p .fly/node && cd .fly/node
-```
-
-### **Step 2**: Create fly configuration for the node
-
-This is important to control the auto-stop behavior and minimum machines running. Create a `.fly/node/fly.toml` in this directory with the following content:
-
-```toml
-[build]
-  image = "ghcr.io/prototyp3-dev/test-node-cloud:test"
-
-[http_service]
-  internal_port = 80
-  force_https = true
-  auto_stop_machines = 'off'
-  auto_start_machines = false
-  min_machines_running = 1
-  processes = ['app']
-
-[metrics]
-  port = 9000
-  path = "/metrics"
-
-[[vm]]
-  size = 'shared-cpu-1x'
-  memory = '1gb'
-  cpu_kind = 'shared'
-  cpus = 1
-```
-
-We suggest creating a persistent volume to store the snapshots, so you wouldn't need to transfer the snapshots when restarting the virtual machine. Create the `<node-volume>` volume and add this section to the `.fly/node/fly.toml` file:
-
-```toml
-[[mounts]]
-  source = '<nodevolume>'
-  destination = '/mnt'
-  initial_size = '5gb'
-```
-
-### **Step 3**: Create the Postgres database
-
-
-You can also use the `fly postgres` to create the database
+For a new deployment, you'll need to deploy the contracts and register the app to the node. You can also set the epoch length and salt for the deployment using the `--epoch-length` and `--salt` flags.
 
 ```shell
-fly postgres create
+./dev.sh deploy-app --app-name <app-name> --env-file .env.<testnet> --owner <owner-address>
 ```
 
-Make sure to set the value of `CARTESI_POSTGRES_ENDPOINT` variable to your environment file. You should use the provided `Connection string` to set this variable, and don't forget to add the database `postgres` and option `sslmode=disable` to the string as shown below:
+Alternatively, you can deploy an app with pre-deployed contracts.
 
 ```shell
-postgres://{username}:{password}@{hostname}:{port}/postgres?sslmode=disable
+./dev.sh deploy-app --app-name <app-name> --env-file .env.<testnet> --application-address <application-address> --consensus-address <consensus-address>
 ```
-
-### **Step 4**: Create the Fly app
-
-```shell
-fly launch --name <app-name> --copy-config --no-deploy -c .fly/node/fly.toml
-```
-
-### **Step 5**: Import the secrets from the .env file
-
-```shell
-fly secrets import -c .fly/node/fly.toml < .env.<testnet>
-```
-
-### **Step 6**: Deploy the rollups node
-
-```shell
-fly deploy --ha=false -c .fly/node/fly.toml
-```
-
-Now you have a rollups node running on the provided url.
-
-### **Step 7**: Deploy the app to the node
-
-You'll have to copy the snapshot using sftp shell (we are considering the application snapshot is at `.cartesi/image`). 
-
-```shell
-app_name=<app-name>
-image_path=.cartesi/image
-
-fly ssh console -c .fly/node/fly.toml -C "mkdir -p /mnt/apps/$app_name"
-```
-
-Then run this command to print all transfers:
-
-```shell
-for f in $(ls -d $image_path/*); do echo "put $f /mnt/apps/$app_name"/$(basename $f); done
-```
-
-Then run the sftp shell and paste the listed transfers:
-
-```shell
-fly sftp shell -c .fly/node/fly.toml
-```
-
-Finally, run the deployment on the node: 
-
-```shell
-fly ssh console -c .fly/node/fly.toml -C "bash -c 'APP_NAME=$app_name OWNER={OWNER} /deploy.sh /mnt/apps/$app_name'"
-```
-
-You should set `OWNER` to the same owner of the `CARTESI_AUTH_PRIVATE_KEY`. Set `CONSENSUS_ADDRESS` to deploy a new application with same consensus already deployed. You can also set `EPOCH_LENGTH`, and `SALT`.
-
-If you have already deployed the application, you can register it to add to the node (after transfering the image).
-
-```shell
-fly ssh console -c .fly/node/fly.toml -C "bash -c 'APP_NAME=$app_name APPLICATION_ADDRESS=${APPLICATION_ADDRESS} CONSENSUS_ADDRESS=${CONSENSUS_ADDRESS} /register.sh /mnt/apps/$app_name'"
-```
-
-Your application is now deployed and registered on the node. Also, note that you can deploy multiple applications on the same node.
+Your application is now deployed and registered on the Rollups node. You can start sending inputs using the methods described in the [interactions](./interacting) page.
